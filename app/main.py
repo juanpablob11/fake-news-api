@@ -7,6 +7,12 @@ import joblib
 
 from app.custom_preprocessor import SpacyPreprocessor  # Importación necesaria
 
+from pathlib import Path
+import pathlib
+
+# Parche: cuando el modelo quiera cargar PosixPath, que use WindowsPath
+pathlib.PosixPath = pathlib.WindowsPath
+
 app = FastAPI()
 
 from typing import Union, Optional
@@ -36,8 +42,10 @@ def predecir(datos: list[Noticia]):
     # Eliminar columnas que el modelo no necesita
     df = df.drop(columns=["Fecha", "ID"], errors="ignore")
     modelo = get_model()
+    print("antes de predecir")
     preds = modelo.predict(df)
     probs = modelo.predict_proba(df)[:, 1]
+    print("después de predecir")
     return [{"prediccion": int(pred), "probabilidad": float(prob)} for pred, prob in zip(preds, probs)]
 
 @app.post("/reentrenar")
