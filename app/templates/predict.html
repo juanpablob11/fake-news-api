@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Predicción de Noticias</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2eafd;
+      color: #333;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 200px;
+      background-color: #b084ec;
+      height: 100vh;
+      padding: 20px;
+      color: white;
+    }
+
+    .sidebar h1 {
+      font-size: 24px;
+      margin-bottom: 40px;
+    }
+
+    .sidebar a {
+      display: block;
+      margin: 20px 0;
+      color: white;
+      text-decoration: none;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .main-panel {
+      flex: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .right-panel {
+      flex: 1;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      height: 100%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .card {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .upload-section input[type="file"] {
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      background-color: #f29edb;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #e087ca;
+    }
+
+    .table {
+      width: 100%;
+      background-color: white;
+      color: #333;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .table th, .table td {
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+
+    .stats h2 {
+      margin-top: 0;
+      color: #5a2a82;
+    }
+
+    .two-columns {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .left-column, .right-column {
+      flex: 1;
+    }
+    
+    .divider {
+      width: 3px;
+      background-color: #666;
+      margin: 0 10px;
+      border-radius: 2px;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h1>Fake News API</h1>
+    <a href="/predict">🧠 Predecir noticias</a>
+    <a href="/retrain">🔁 Reentrenar modelo</a>
+  </div>
+
+  <div class="content">
+    <div class="main-panel">
+      <div class="card upload-section">
+        <div class="two-columns">
+          
+          <!-- Columna derecha: clasificar noticia manualmente -->
+          <div class="left-column">
+            <h2>Ingresa una noticia</h2>
+            <p>Escribe manualmente el título y la descripción de una noticia para clasificarla.</p>
+            <form method="post" action="/predict">
+              <label for="titulo"><strong>Título:</strong></label><br>
+              <input type="text" id="titulo" name="titulo" style="width: 100%;" required>
+              <br><br>
+              <label for="descripcion"><strong>Descripción:</strong></label><br>
+              <textarea id="descripcion" name="descripcion" rows="4" style="width: 100%;" required></textarea>
+              <br><br>
+              <button class="btn" type="submit">Clasificar noticia</button>
+            </form>
+          </div>
+            <!-- DIVISOR vertical -->
+            <div class="divider"></div>
+
+          <!-- Columna izquierda: subir archivo -->
+          <div class="right-column" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+            <div>
+              <h2>O sube tu archivo</h2>
+              <p>El archivo debe ser un <strong>CSV</strong> con las noticias que deseas clasificar.</p>
+              <form method="post" action="/predict" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".csv" required />
+                <br />
+                <button class="btn" type="submit">Subir archivo</button>
+              </form>
+            </div>
+          
+            <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+              <img src="/statics/addFile.png" alt="Subir archivo" style="max-width: 150px; height: auto;">
+            </div>
+          </div>
+          
+      
+        </div>
+      </div>
+      
+
+      <div class="card">
+        <h2>Noticias clasificadas</h2>
+        <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Noticia</th>
+                <th>Predicción</th>
+                <th>Probabilidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="4">No hay datos aún</td></tr>
+            </tbody>
+          </table>
+      </div>
+    </div>
+
+    <div class="right-panel stats">
+        <h2>Estadísticas</h2>
+        <canvas id="donutChart" width="200" height="200"></canvas>
+        <div style="margin-top: 10px; text-align: center;">
+          <p><strong>Verdaderas:</strong> __ </p>
+          <p><strong>Falsas:</strong> _ </p>
+        </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const verdaderas = "__VERDADERAS__";
+    const falsas = "__FALSAS__";
+
+    const ctx = document.getElementById('donutChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Verdaderas', 'Falsas'],
+        datasets: [{
+          label: 'Distribución',
+          data: [verdaderas, falsas],
+          backgroundColor: ['#a45ee5', '#f29edb'],
+          borderColor: '#ffffff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+  </script>
+  <script>
+    function toggleDescripcion(id) {
+      const elemento = document.getElementById(id);
+      if (elemento.style.display === "none") {
+        elemento.style.display = "block";
+      } else {
+        elemento.style.display = "none";
+      }
+    }
+  </script>  
+</body>
+</html>

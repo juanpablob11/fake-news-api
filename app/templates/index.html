@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Fake News API</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2eafd;
+      color: #4b3f72;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+      color: #7c3aed;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 40px;
+    }
+
+    .container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    a.button {
+      background: linear-gradient(135deg, #9d4edd, #c084fc);
+      color: white;
+      text-decoration: none;
+      padding: 16px 32px;
+      font-size: 18px;
+      border-radius: 12px;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 12px rgba(160, 100, 240, 0.2);
+    }
+
+    a.button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(160, 100, 240, 0.3);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bienvenido a la Fake News API 📰</h1>
+  <p>Selecciona una opción:</p>
+
+  <div class="container">
+    <a class="button" href="/predict">🧠 Predecir Noticia</a>
+    <a class="button" href="/retrain">🔁 Reentrenar Modelo</a>
+  </div>
+
+  <footer>Modelo de Noticias Falsas - 2025</footer>
+</body>
+</html>

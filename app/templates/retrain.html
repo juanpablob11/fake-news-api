@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reentrenar modelo</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2eafd;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 200px;
+      background-color: #b084ec;
+      height: 100vh;
+      padding: 20px;
+      color: white;
+    }
+
+    .sidebar h1 {
+      font-size: 24px;
+      margin-bottom: 40px;
+    }
+
+    .sidebar a {
+      display: block;
+      margin: 20px 0;
+      color: white;
+      text-decoration: none;
+    }
+
+    .main {
+      padding: 40px;
+      flex: 1;
+      display: flex;
+    }
+
+    .left {
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .right {
+      flex: 2;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      padding-left: 40px;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(160, 100, 240, 0.1);
+      text-align: center;
+    }
+
+    .card h2 {
+      color: #8e44ad;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .card .value {
+      font-size: 30px;
+      font-weight: bold;
+      color: #4b3f72;
+    }
+
+    .upload-card {
+      background: linear-gradient(135deg, #decdf9, #f3e8fd);
+    }
+
+    .upload-card form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #9d4edd;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .btn:hover {
+      background-color: #7c3aed;
+    }
+
+    .icon {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Fake News API</h1>
+        <a href="/predict">🧠 Predecir noticias</a>
+        <a href="/retrain">🔁 Reentrenar modelo</a>
+      </div>      
+
+  <div class="main">
+    <div class="left">
+        <div class="card upload-card" style="height: 75vh; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h2>Reentrena el modelo de predicción con un CSV</h2>
+            <h2 style="font-size: 18px; color: #555;">El archivo debe tener las columnas:<br><strong>ID, Titulo, Descripcion, Fecha, Label</strong></h2>
+            <br>
+            <form method="post" action="/retrain" enctype="multipart/form-data">
+              <input type="file" name="file" accept=".csv" required />
+              <button class="btn" type="submit">Subir archivo</button>
+            </form>
+          </div>
+      
+          <div class="card" style="margin-top: 30px; background-color: #ffffffcc;">
+            <h2 style="font-size: 16px; color: #4b3f72;">📚 Total de noticias entrenadas</h2>
+            <div class="value">__TOTAL__</div>
+          </div>
+        </div>
+      </div>
+      
+
+    <div class="right">
+      <div class="card">
+        <img src="/statics/fscore.png" alt="fscore" style="max-width: 120px; height: auto;">
+        <h2>F1 Score</h2>
+        <div class="value">__F1__%</div>
+      </div>
+      <div class="card">
+        <img src="/statics/rec.png" alt="rec" style="max-width: 120px; height: auto;">
+        <h2>Recall</h2>
+        <div class="value">__RECALL__%</div>
+      </div>
+      <div class="card">
+        <img src="/statics/prec.png" alt="prec" style="max-width: 120px; height: auto;">
+        <h2>Precisión</h2>
+        <div class="value">__PRECISION__%</div>
+      </div>
+      <div class="card">
+        <img src="/statics/acc.png" alt="acc" style="max-width: 120px; height: auto;">
+        <h2>Accuracy</h2>
+        <div class="value">__ACCURACY__%</div>
+      </div>
+    </div>
+  </div>
+ 
+</body>
+</html>
