@@ -162,7 +162,16 @@ async def retrain_page():
     base_dir = Path(__file__).resolve().parent
     html_path = base_dir / "templates" / "retrain.html"
     html = html_path.read_text(encoding="utf-8")
-    return HTMLResponse(content=html)
+    
+    # Reemplazar todos los placeholders con cadenas vacías
+    html_final = (
+        html.replace("__F1__", "")
+            .replace("__RECALL__", "")
+            .replace("__PRECISION__", "")
+            .replace("__ACCURACY__", "")
+            .replace("__TOTAL__", "")
+    )
+    return HTMLResponse(content=html_final)
 
 @app.post("/retrain", response_class=HTMLResponse)
 async def retrain_model(file: UploadFile):
